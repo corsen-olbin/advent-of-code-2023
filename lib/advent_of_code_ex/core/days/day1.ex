@@ -4,7 +4,11 @@ defmodule AdventOfCodeEx.Core.Days.Day1 do
   def part_1(input) do
     input
     |> String.split("\r\n")
-    |> Enum.map(&map_to_freq/1)
+    |> Task.async_stream(&map_to_freq/1, ordered: true)
+    |> Stream.map(fn
+      {:ok, res} -> res
+      {:error, error} -> throw error
+    end)
     |> Enum.sum()
   end
 
